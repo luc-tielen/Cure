@@ -10,16 +10,13 @@ defmodule Cure.Mixfile do
      package: package]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type `mix help compile.app` for more information
   def application do
     [applications: [:logger],
     registered: [Cure.Supervisor],
     mod: {Cure, []}]
   end
   
-  defp description do #TODO max 1 paragraaf
+  defp description do 
     """
     Interfaces Elixir with C-code in a user-friendly way! Based on Erlang-ports.
     Provides a few Mix-tasks to kickstart the development process.
@@ -34,6 +31,6 @@ defmodule Cure.Mixfile do
     [files: ~w(lib priv c_src mix.exs README* readme* LICENSE* license*),
     contributors: ["Luc Tielen"],
     licenses: ["MIT"],
-    links: %{"GitHub" => "https://github.com/primordus/cure"}]
+    links: %{"GitHub" => "https://github.com/Primordus/Cure.git"}]
   end
 end

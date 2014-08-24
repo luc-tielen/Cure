@@ -18,7 +18,7 @@ int read_msg(byte *buffer)
     int length;
 
     if(read_input(len, 2) != 2){
-        return -1; //error.
+        return -1; 
     }
 
     length = (len[0] << 8) | len[1];

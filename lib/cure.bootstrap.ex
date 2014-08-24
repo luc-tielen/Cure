@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Cure.Bootstrap do
 
   def run(_args) do
     File.mkdir! @own_source_dir
-    IO.puts "Created c_src/."
+    IO.puts "Created ./c_src/"
 
     generate_files
     IO.puts "Done bootstrapping."
