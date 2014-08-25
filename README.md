@@ -44,7 +44,7 @@ By default, Cure starts a supervisor which supervises all of its children (a chi
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.0.1"}]
+	[{:cure, "~> 0.0.2"}]
 end
 ```
 ### Fetch & compile dependencies
