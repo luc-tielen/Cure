@@ -91,7 +91,3 @@ The command "mix cure.make" uses the Makefile to compile all your C-code.
 
 - [Erlang documentation](http://www.erlang.org/doc/tutorial/c_port.html)
 - [Elixir](http://elixir-lang.org/docs/stable/elixir/Port.html)
-
-## TODO-list
-- Add docs
-- Add tests
