@@ -8,9 +8,9 @@ The following example loads a program called "program" which is located in the .
 
 ```elixir
 # Open the Port to the C-program:
-{:ok, server_pid} = Cure.load "program" # "./program" also works
+{:ok, server_pid} = Cure.load "./c_src/program" 
 
-# Sending and recieving data:
+# Sending and receiving data:
 # Option 1:
 server_pid |> Cure.send_data("Testing 1, 2, 3!", fn(data) ->
     # Process the received data here.
@@ -55,12 +55,12 @@ mix deps.compile
 
 ### Start developing in C
 
-1. Generate the necessary base files to communicate between C and Elixir:
+- Generate the necessary base files to communicate between C and Elixir:
 ```
 mix cure.bootstrap
 ```
 
-2. Compile your C-code (needed after each modification of your C-code):
+- Compile your C-code (needed after each modification of your C-code):
 ```
 mix cure.make
 ```
@@ -69,6 +69,7 @@ mix cure.make
 
 C-code is currently placed in the c_src directory of your application.
 It can interface with Elixir-code based on 2 important functions:
+
 1. read_msg to read data coming from Elixir;
 2. send_msg to send data to Elixir.
 
@@ -77,6 +78,7 @@ It can interface with Elixir-code based on 2 important functions:
 ```C
 #include <elixir_comm.h>
 ```
+
 - The code for these functions is mostly based on the following [link](http://www.erlang.org/doc/tutorial/c_port.html#id57564).
 
 ## Makefile
@@ -93,24 +95,3 @@ The command "mix cure.make" uses the Makefile to compile all your C-code.
 ## TODO-list
 - Add docs
 - Add tests
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

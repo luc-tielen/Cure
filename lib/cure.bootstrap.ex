@@ -3,13 +3,17 @@ defmodule Mix.Tasks.Cure.Bootstrap do
 
   @shortdoc "Generates files to bootstrap the C-development."
 
-  @cure_source_dir Path.expand(Application.app_dir(:cure) <> "/c_src")
-  @own_source_dir Path.expand("./c_src")
+  @cure_source_dir Path.expand("./c_src/")
+  @own_source_dir Path.expand("../../c_src")
   
   @cmd_opts [stderr_to_stdout: true]
 
+  @doc """
+  Creates the c_src directory along with a Makefile and a few basic C-files to
+  streamline the C-development.
+  """
   def run(_args) do
-    File.mkdir! @own_source_dir
+    File.mkdir @own_source_dir
     IO.puts "Created ./c_src/"
 
     generate_files
@@ -69,7 +73,7 @@ defmodule Mix.Tasks.Cure.Bootstrap do
       # the directory where the necessary source-files are contained.
 
       INC_PARAMS=#{@cure_source_dir}
-      ELIXIR_COMM_C = $(INC_PARAMS)elixir_comm.c
+      ELIXIR_COMM_C = $(INC_PARAMS)/elixir_comm.c
 
       program:\n\tgcc -o program main.c $(ELIXIR_COMM_C) -I$(INC_PARAMS)
       """
