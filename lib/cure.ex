@@ -40,6 +40,9 @@ defmodule Cure do
   Stops a server process.
   """
   def stop(server) when server |> is_pid do
+    # If the server is supervised it has to be removed from there, otherwise
+    # supervisor will restart it and the C-program will stay activated.
+    server |> Cure.Supervisor.terminate_child
     server |> Cure.Server.stop
   end
 end
