@@ -35,4 +35,11 @@ defmodule Cure do
       and (callback |> is_function(1) or nil? callback) do
     server |> Cure.Server.send_data(msg, callback)
   end
+
+  @doc """
+  Stops a server process.
+  """
+  def stop(server) when server |> is_pid do
+    server |> Cure.Server.stop
+  end
 end

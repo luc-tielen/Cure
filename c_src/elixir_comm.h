@@ -5,8 +5,9 @@
 
 typedef unsigned char byte;
 
-int read_input(byte *buffer, int length);
-int read_msg(byte *buffer);
-void send_msg(byte *buffer, int length);
+static int read_input(byte* buffer, int length);
+int read_msg(byte* buffer);
+void send_msg(byte* buffer, int length);
+void send_error(char* error_message);
 
 #endif

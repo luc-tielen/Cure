@@ -1,8 +1,13 @@
 //Code mostly based on: http://www.erlang.org/doc/tutorial/c_port.html
 #include <stdio.h>
+#include <string.h>
 #include "elixir_comm.h"
 
-int read_input(byte *buffer, int length)
+/*
+ * Helper function to read data from Erlang/Elixir from stdin.
+ * Returns the number of bytes read (-1 on error), fills buffer with data.
+ */
+static int read_input(byte* buffer, int length)
 {
     int bytes_read = fread(buffer, sizeof(byte), length, stdin);
     if(bytes_read != length){
@@ -12,9 +17,13 @@ int read_input(byte *buffer, int length)
     return bytes_read;
 }
 
-int read_msg(byte *buffer)
+/*
+ * Reads a message coming from Erlang/Elixir from stdin.
+ * Returns the number of bytes read (-1 on error), fills the buffer with data.
+ */
+int read_msg(byte* buffer)
 {
-    byte len[2];
+    byte len[2]; //first 2 bytes contain length of the message.
     int length;
 
     if(read_input(len, 2) != 2){
@@ -25,12 +34,24 @@ int read_msg(byte *buffer)
     return read_input(buffer, length);
 }
 
-void send_msg(byte *buffer, int length)
+/*
+ * Sends a message to Erlang/Elixir via stdout.
+ */
+void send_msg(byte* buffer, int length)
 {
-    byte len[2];
+    byte len[2]; //first 2 bytes contain length of the message.
     len[0] = (length >> 8) & 0xff;
     len[1] = length & 0xff;
     fwrite(len, sizeof(byte), 2, stdout);
     fwrite(buffer, sizeof(byte), length, stdout);
     fflush(stdout);
+}
+
+/*
+ * Helper function to send an error message back to Erlang/Elixir.
+ * The message has to be a string that terminates with \0.
+ */
+void send_error(char* error_message)
+{
+    send_msg(error_message, strlen(error_message));
 }
