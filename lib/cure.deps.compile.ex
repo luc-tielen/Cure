@@ -15,6 +15,8 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
 
     get_deps |> Enum.map(fn(dep) ->
       spawn(fn ->
+        IO.puts "Dependency: #{dep}"
+
         if need_to_compile? dep do
           IO.puts "Compiling #{dep}."
           compile(dep)
@@ -25,20 +27,22 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
 
   @doc false
   defp get_deps do
-    ls_output = File.ls! "deps"
-    IO.puts "ls-output #{ls_output}"
-    ls_output
+    File.ls! "deps"
   end
 
   @doc false
   defp need_to_compile?(dep) do
     dep_location = Path.expand("./deps") <> "/" <> dep <> "/"
+    IO.puts dep_location
+
     mix_exs = dep_location <> "mix.exs"
     c_src = dep_location <> "c_src/"
 
     mix_file = File.read! mix_exs
     result = Regex.run(~r/:cure/, mix_file)
-    is_list result and File.exists? c_src
+    IO.puts result
+    IO.puts File.exists?(c_src)
+    result == [":cure"] and File.exists? c_src
   end
 
   @doc false
