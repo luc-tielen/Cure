@@ -9,16 +9,8 @@ defmodule Mix.Tasks.Cure.Make do
   @doc """
   Compiles the C-files located in the ./c_src directory.
   """
-  def run([]) do
-    {output, _} = System.cmd("make", ["-C", @source_dir], @opts)
+  def run(_args) do
+    {output, _} = System.cmd("make", ["all", "-C", @source_dir], @opts)
     IO.puts output
-  end
-  def run([target]) do
-    {output, _} = System.cmd("make", [target, "-C", @source_dir], @opts)
-    IO.puts output
-  end
-  def run([target | rest]) do
-    run([target])
-    run(rest)
   end
 end

@@ -39,12 +39,15 @@ By default, Cure starts a supervisor which supervises all of its children (a chi
 {:ok, server_pid} = Cure.Server.start "program_name"
 ```
 
+An example that uses Cure can be found at the following
+[link](https://github.com/Primordus/Subtitlex).
+
 ## Getting started
 
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.0.2"}]
+	[{:cure, "~> 0.2.0"}]
 end
 ```
 ### Fetch & compile dependencies
@@ -63,6 +66,11 @@ mix cure.bootstrap
 - Compile your C-code (needed after each modification of your C-code):
 ```
 mix cure.make
+```
+
+- If you have dependencies that also use Cure:
+```
+mix cure.deps.compile
 ```
 
 ## C-code

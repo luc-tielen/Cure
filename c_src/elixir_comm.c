@@ -3,10 +3,6 @@
 #include <string.h>
 #include "elixir_comm.h"
 
-/*
- * Helper function to read data from Erlang/Elixir from stdin.
- * Returns the number of bytes read (-1 on error), fills buffer with data.
- */
 static int read_input(byte* buffer, int length)
 {
     int bytes_read = fread(buffer, sizeof(byte), length, stdin);
@@ -17,10 +13,6 @@ static int read_input(byte* buffer, int length)
     return bytes_read;
 }
 
-/*
- * Reads a message coming from Erlang/Elixir from stdin.
- * Returns the number of bytes read (-1 on error), fills the buffer with data.
- */
 int read_msg(byte* buffer)
 {
     byte len[2]; //first 2 bytes contain length of the message.
@@ -34,9 +26,6 @@ int read_msg(byte* buffer)
     return read_input(buffer, length);
 }
 
-/*
- * Sends a message to Erlang/Elixir via stdout.
- */
 void send_msg(byte* buffer, int length)
 {
     byte len[2]; //first 2 bytes contain length of the message.
@@ -47,10 +36,6 @@ void send_msg(byte* buffer, int length)
     fflush(stdout);
 }
 
-/*
- * Helper function to send an error message back to Erlang/Elixir.
- * The message has to be a string that terminates with \0.
- */
 void send_error(char* error_message)
 {
     send_msg(error_message, strlen(error_message));

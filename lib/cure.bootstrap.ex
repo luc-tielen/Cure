@@ -69,13 +69,19 @@ defmodule Mix.Tasks.Cure.Bootstrap do
     unless File.exists?(@own_source_dir <> "/Makefile") do
       contents = """
       # This Makefile is automatically generated with "mix cure.bootstrap"!
-      # Please do not remove INC_PARAMS and ELIXIR_COMM_C as it points to 
-      # the directory where the necessary source-files are contained.
+      # Please do not remove the following variables as they point to 
+      # the necessary source-files.
 
-      INC_PARAMS=#{@cure_source_dir}
+      INC_PARAMS = #{@cure_source_dir}
       ELIXIR_COMM_C = $(INC_PARAMS)/elixir_comm.c
+      C_FLAGS = -I$(INC_PARAMS) -O3
+      
+      # You can add other build targets on the next line:
+      ALL = program
 
-      program:\n\tgcc -o program main.c $(ELIXIR_COMM_C) -I$(INC_PARAMS)
+      # Targets:
+      all: $(ALL)
+      program:\n\tgcc -o program main.c $(ELIXIR_COMM_C) $(C_FLAGS)
       """
       File.write!(@own_source_dir <> "/Makefile", contents)
 
