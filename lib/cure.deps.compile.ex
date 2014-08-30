@@ -14,14 +14,9 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
     IO.puts "Compiling all Cure-based dependencies."
 
     get_deps |> Enum.map(fn(dep) ->
-      spawn(fn ->
-        IO.puts "Dependency: #{dep}"
-
-        if need_to_compile? dep do
-          IO.puts "Compiling #{dep}."
-          compile(dep)
-        end
-      end)
+      if need_to_compile?(dep) do
+        compile(dep)
+      end
     end)
   end
 
@@ -33,22 +28,22 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
   @doc false
   defp need_to_compile?(dep) do
     dep_location = Path.expand("./deps") <> "/" <> dep <> "/"
-    IO.puts dep_location
-
     mix_exs = dep_location <> "mix.exs"
     c_src = dep_location <> "c_src/"
 
-    mix_file = File.read! mix_exs
-    result = Regex.run(~r/:cure/, mix_file)
-    IO.puts result
-    IO.puts File.exists?(c_src)
-    result == [":cure"] and File.exists? c_src
+    if File.exists? mix_exs do
+      mix_file = File.read! mix_exs
+      result = Regex.run(~r/:cure/, mix_file)
+      result == [":cure"] and File.exists?(c_src) and dep != "cure" 
+    else # Erlang programs don't have a mix.exs?
+      false
+    end
   end
 
   @doc false
   defp compile(dep) do
     dir = Path.expand("./deps") <> "/" <> dep <> "/c_src"
-    options = [stderr_to_std_out: true]
+    options = [stderr_to_stdout: true]
     {output, _} = System.cmd("make", ["all", "-C", dir], options)
     IO.puts output
   end
