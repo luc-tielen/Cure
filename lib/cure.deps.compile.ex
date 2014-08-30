@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.Cure.Deps.Compile do
   use Mix.Task
-
+  
   @shortdoc "Compiles the C-files of all the dependencies (that use Cure)."
   
   @doc """
@@ -11,9 +11,12 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
     # 2. Check if they have a cure dependency;
     # 3. If yes -> compile the program using make.
 
+    IO.puts "Compiling all Cure-based dependencies."
+
     get_deps |> Enum.map(fn(dep) ->
       spawn(fn ->
         if need_to_compile? dep do
+          IO.puts "Compiling #{dep}."
           compile(dep)
         end
       end)
@@ -22,7 +25,9 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
 
   @doc false
   defp get_deps do
-    File.ls! "deps"
+    ls_output = File.ls! "deps"
+    IO.puts "ls-output #{ls_output}"
+    ls_output
   end
 
   @doc false
@@ -32,7 +37,8 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
     c_src = dep_location <> "c_src/"
 
     mix_file = File.read! mix_exs
-    is_list(Regex.run(~r/:cure/, mix_file)) and File.exists? c_src
+    result = Regex.run(~r/:cure/, mix_file)
+    is_list result and File.exists? c_src
   end
 
   @doc false
