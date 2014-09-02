@@ -6,7 +6,7 @@ defmodule CureTest do
   setup do
     unless File.exists?(@program_name) do
       IO.puts "Compiling test_program."
-      System.cmd "make", []
+      System.cmd "make", ["-C", "./test/"]
     end
     :ok
   end

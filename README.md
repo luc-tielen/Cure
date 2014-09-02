@@ -47,7 +47,7 @@ An example that uses Cure can be found at the following
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.2.0"}]
+	[{:cure, "~> 0.2.1"}]
 end
 ```
 ### Fetch & compile dependencies
