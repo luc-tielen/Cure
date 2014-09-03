@@ -11,13 +11,16 @@ The following example loads a program called "program" which is located in the .
 {:ok, server_pid} = Cure.load "./c_src/program" 
 
 # Sending and receiving data:
-# Option 1:
-server_pid |> Cure.send_data("Testing 1, 2, 3!", fn(data) ->
+# Option 1 (synchronous):
+data = server_pid |> Cure.send_data("Testing 1, 2, 3!", :sync)
+
+# Option 2 (asynchronous):
+server_pid |> Cure.send_data(<<1, 2, 3, 4>>, fn(data) ->
     # Process the received data here.
     IO.inspect data
 end)
 
-# Option 2:
+# Option 3 (asynchronous):
 server_pid |> Cure.send_data("More data!")
 receive do
   {:cure_data, data} ->

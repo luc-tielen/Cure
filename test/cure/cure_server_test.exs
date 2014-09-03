@@ -33,5 +33,7 @@ defmodule Cure.ServerTest do
       pid |> send {:test_data, data}
     end)
     assert_receive {:test_data, ^str}
+
+    assert Cure.Server.send_data(server, str, :sync) == str
   end
 end

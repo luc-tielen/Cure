@@ -25,5 +25,7 @@ defmodule CureTest do
       pid |> send {:data_from_callback, data}
     end
     assert_receive {:data_from_callback, ^data2}
+    
+    assert "123456789" == Cure.send_data(server, "123456789", :sync)
   end
 end

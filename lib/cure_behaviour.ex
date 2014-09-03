@@ -26,7 +26,7 @@ defmodule Cure.Behaviour do
         GenServer.start(__MODULE__, [])
       end
       def start(params) when is_list(params) do
-        GenServer.start(__MODULE__, [params])
+        GenServer.start(__MODULE__, params)
       end
 
       @doc """
@@ -37,11 +37,11 @@ defmodule Cure.Behaviour do
         GenServer.start_link(__MODULE__, [])
       end
       def start_link(params) when is_list(params) do
-        GenServer.start_link(__MODULE__, [params])
+        GenServer.start_link(__MODULE__, params)
       end
 
       @doc false
-      def init([params]) do
+      def init(params) do
         Process.flag(:trap_exit, true)
         port = init_port(program_location)
         {:ok, state} = on_initialize(port, params)
@@ -65,12 +65,32 @@ defmodule Cure.Behaviour do
       end
 
       @doc """
+      Sends binary data to the C-program that the server is connected with. 
+      Returns the output from the C-program as binary data.
+      """
+      def send_data(server, msg, :sync) 
+          when server |> is_pid 
+          and msg |> is_binary do
+        server |> GenServer.call({:data, msg})
+      end
+
+      @doc """
       Stops the server process.
       """
       def stop(server) when server |> is_pid do
         GenServer.cast(server, :stop)
       end
-      
+     
+      @doc false
+      def handle_call({:data, msg}, _from, %State{port: port} = state) do
+        port |> Port.command(msg)
+        result = receive do
+        {^port, {:data, value}} -> value
+        after 1000 -> :timeout
+        end
+        {:reply, result, state}
+      end
+
       @doc false
       def handle_cast({:data, from, msg, nil}, state) do
         state = %State{state | queue: [{from, nil} | state.queue]}

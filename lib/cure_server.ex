@@ -55,6 +55,16 @@ defmodule Cure.Server do
   end
 
   @doc """
+  Sends binary data to the C-program that the server is connected with. Returns
+  the output from the C-program as binary data.
+  """
+  def send_data(server, msg, :sync) 
+      when server |> is_pid 
+      and msg |> is_binary do
+    server |> GenServer.call({:data, msg})
+  end
+
+  @doc """
   Stops the server process.
   """
   def stop(server) when server |> is_pid do
@@ -62,18 +72,28 @@ defmodule Cure.Server do
   end
 
   @doc false
-  def handle_cast({:data, from, msg, nil}, state) do
+  def handle_call({:data, msg}, _from, %State{port: port} = state) do
+    port |> Port.command(msg)
+    result = receive do
+    {^port, {:data, value}} -> value
+    after 1000 -> :timeout
+    end
+    {:reply, result, state}
+  end
+
+  @doc false
+  def handle_cast({:data, from, msg, nil}, %State{port: port} = state) do
     state = %State{state | queue: [{from, nil} | state.queue]}
-    state.port |> Port.command(msg)
+    port |> Port.command(msg)
     {:noreply, state}
   end
-  def handle_cast({:data, from, msg, callback}, state) do
+  def handle_cast({:data, from, msg, callback}, %State{port: port} = state) do
     state = %State{state | queue: [{from, callback} | state.queue]}
-    state.port |> Port.command(msg)
+    port |> Port.command(msg)
     {:noreply, state}
   end
-  def handle_cast(:stop, state) do
-    state.port |> Port.close
+  def handle_cast(:stop, %State{port: port} = state) do
+    port |> Port.close
     {:stop, :normal, state}
   end
 
@@ -91,9 +111,4 @@ defmodule Cure.Server do
     
     {:noreply, state}
   end
-
-  # Helper functions:
-  # defp abs_path(program_name) do
-    #  Path.expand @c_dir <> program_name
-  # end
 end

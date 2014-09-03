@@ -20,6 +20,14 @@ defmodule Cure do
   def load(c_program_name) when c_program_name |> is_binary do
     Cure.Supervisor.start_child(c_program_name)
   end
+  
+  @doc """
+  Sends binary data to the C-program that the server is connected with. Returns
+  the output from the C-program as binary data.
+  """
+  def send_data(server, msg, :sync) do
+    server |> Cure.Server.send_data(msg, :sync)
+  end
 
   @doc """
   Sends binary data to the C-program that the server is connected with. A 
