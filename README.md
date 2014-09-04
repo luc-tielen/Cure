@@ -40,6 +40,18 @@ By default, Cure starts a supervisor which supervises all of its children (a chi
 
 # Option 2:
 {:ok, server_pid} = Cure.Server.start "program_name"
+
+# Option 3:
+
+```
+
+If you want to use a Port directly, you can use the following functions
+(currently only supports synchronous communication):
+
+```elixir
+port = Cure.Port.load("program_name")
+result = port |> Cure.Port.send_data("123456789")
+port |> Cure.Port.close
 ```
 
 An example that uses Cure can be found at the following
