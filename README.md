@@ -40,9 +40,6 @@ By default, Cure starts a supervisor which supervises all of its children (a chi
 
 # Option 2:
 {:ok, server_pid} = Cure.Server.start "program_name"
-
-# Option 3:
-
 ```
 
 If you want to use a Port directly, you can use the following functions
