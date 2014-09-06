@@ -11,6 +11,7 @@ defmodule Cure.Port do
   @doc """
   Opens a Port that can communicate with a C-program.
   """
+  @spec load(String.t) :: port
   def load(program_location) when program_location |> is_binary do
     # TODO check if this always loads the right program.
     Port.open({:spawn, program_location}, @port_options)
@@ -20,6 +21,7 @@ defmodule Cure.Port do
   Sends data to a Port. This function blocks until a reply is 
   received or until the function times out (default is 1 second).
   """
+  @spec send_data(port, binary, timeout) :: binary | :timeout
   def send_data(port, data, timeout \\ 1000) 
       when port |> is_port 
       and data |> is_binary 
@@ -34,7 +36,9 @@ defmodule Cure.Port do
   @doc """
   Closes a Port.
   """
+  @spec close(port) :: :ok
   def close(port) when port |> is_port do
     port |> Port.close
+    :ok
   end
 end

@@ -51,15 +51,17 @@ result = port |> Cure.Port.send_data("123456789")
 port |> Cure.Port.close
 ```
 
-An example that uses Cure can be found at the following
-[link](https://github.com/Primordus/Subtitlex).
+Examples that use Cure can be found at the following links:
+
+- [Subtitlex](https://github.com/Primordus/Subtitlex)
+- [ExDSP](https://github.com/Primordus/ExDSP)
 
 ## Getting started
 
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.2.1"}]
+	[{:cure, "~> 0.3.1"}]
 end
 ```
 ### Fetch & compile dependencies

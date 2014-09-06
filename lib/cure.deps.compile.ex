@@ -35,7 +35,8 @@ defmodule Mix.Tasks.Cure.Deps.Compile do
       mix_file = File.read! mix_exs
       result = Regex.run(~r/:cure/, mix_file)
       result == [":cure"] and File.exists?(c_src) and dep != "cure" 
-    else # Erlang programs don't have a mix.exs?
+    else 
+      # Erlang programs don't have a mix.exs?
       false
     end
   end

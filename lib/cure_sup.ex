@@ -9,6 +9,7 @@ defmodule Cure.Supervisor do
   @doc """
   Starts a Cure.Supervisor process (registered as Cure.Supervisor).
   """
+  @spec start_link() :: Supervisor.on_start
   def start_link do
     Supervisor.start_link(__MODULE__, :ok, [name: __MODULE__])
   end
@@ -17,6 +18,7 @@ defmodule Cure.Supervisor do
   Starts a Cure.Server process that is monitored by the Cure.Supervisor
   process.
   """
+  @spec start_child(String.t) :: Supervisor.on_start_child
   def start_child(program_name) when program_name |> is_binary do
     Supervisor.start_child(__MODULE__, [program_name])
   end
@@ -24,6 +26,7 @@ defmodule Cure.Supervisor do
   @doc """
   Terminates a Cure.Server process.
   """
+  @spec terminate_child(pid) :: :ok | {:error, term}
   def terminate_child(server_pid) when server_pid |> is_pid do
     Supervisor.terminate_child(__MODULE__, server_pid)
   end
@@ -31,6 +34,7 @@ defmodule Cure.Supervisor do
   @doc """
   Terminates all supervised Cure.Server processes.
   """
+  @spec terminate_children() :: [:ok | {:error, term}]
   def terminate_children do
     children = Supervisor.which_children(__MODULE__)
     children |> Enum.map(fn({:undefined, pid, :worker, [Cure.Server]}) -> 
