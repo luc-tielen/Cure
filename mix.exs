@@ -3,8 +3,8 @@ defmodule Cure.Mixfile do
 
   def project do
     [app: :cure,
-     version: "0.3.1",
-     elixir: "~> 1.0.0-rc1",
+     version: "0.3.3",
+     elixir: "~> 1.0.0",
      description: description,
      deps: deps,
      package: package]

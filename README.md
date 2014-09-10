@@ -61,7 +61,7 @@ Examples that use Cure can be found at the following links:
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.3.1"}]
+	[{:cure, "~> 0.3.3"}]
 end
 ```
 ### Fetch & compile dependencies
@@ -77,14 +77,25 @@ mix deps.compile
 mix cure.bootstrap
 ```
 
-- Compile your C-code (needed after each modification of your C-code):
+- Compile your C-code (needed after each modification of your C-code)
 ```
-mix cure.make
+mix compile.cure
 ```
 
 - If you have dependencies that also use Cure:
 ```
-mix cure.deps.compile
+mix compile.cure.deps
+```
+
+Another option is to add the last 2 tasks to your mix.exs to compile all C-code
+automatically when you type mix.compile:
+
+```elixir
+def project do
+  [...,
+    compilers: Mix.compilers ++ [:cure, :"cure.deps"],
+    ...]
+end
 ```
 
 ## C-code

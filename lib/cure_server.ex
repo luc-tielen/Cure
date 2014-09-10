@@ -112,7 +112,7 @@ defmodule Cure.Server do
     {:noreply, state}
   end
   def handle_info({:EXIT, _port, reason}, state) do
-    IO.puts "Port closed, reason: #{IO.inspect reason}"
+    IO.puts "Port closed, reason: #{reason}."
     {:stop, :normal, state}
   end
 end
