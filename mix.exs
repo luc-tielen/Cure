@@ -3,7 +3,7 @@ defmodule Cure.Mixfile do
 
   def project do
     [app: :cure,
-     version: "0.3.3",
+     version: "0.3.4",
      elixir: "~> 1.0.0",
      description: description,
      deps: deps,
@@ -18,7 +18,7 @@ defmodule Cure.Mixfile do
   
   defp description do 
     """
-    Interfaces Elixir with C-code in a user-friendly way! Based on Erlang-ports.
+    Interfaces Elixir with C/C++ code in a user-friendly way! Based on Erlang-ports.
     Provides a few Mix-tasks to kickstart the development process.
     """
   end

@@ -1,13 +1,13 @@
 # Cure
 
-A small library that interfaces Elixir-code with C-programs using Erlang/Elixir Ports. Provides Mix tasks to kickstart the development process.
+A small library that interfaces Elixir-code with C/C++ programs using Erlang/Elixir Ports. Provides Mix tasks to kickstart the development process.
 
 ## Example
 
 The following example loads a program called "program" which is located in the ./c_src/ directory.
 
 ```elixir
-# Open the Port to the C-program:
+# Open the Port to the C/C++ program:
 {:ok, server_pid} = Cure.load "./c_src/program" 
 
 # Sending and receiving data:
@@ -28,7 +28,7 @@ receive do
     IO.inspect data
 end
 
-# Close the C-program:
+# Close the program:
 server_pid |> Cure.stop
 ```
 
@@ -61,7 +61,7 @@ Examples that use Cure can be found at the following links:
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.3.3"}]
+	[{:cure, "~> 0.3.4"}]
 end
 ```
 ### Fetch & compile dependencies
@@ -70,14 +70,14 @@ mix deps.get
 mix deps.compile
 ```
 
-### Start developing in C
+### Start developing in C/C++
 
-- Generate the necessary base files to communicate between C and Elixir:
+- Generate the necessary base files to communicate between C/C++ and Elixir:
 ```
 mix cure.bootstrap
 ```
 
-- Compile your C-code (needed after each modification of your C-code)
+- Compile your C/C++ code (needed after each modification of your code)
 ```
 mix compile.cure
 ```
@@ -87,7 +87,7 @@ mix compile.cure
 mix compile.cure.deps
 ```
 
-Another option is to add the last 2 tasks to your mix.exs to compile all C-code
+Another option is to add the last 2 tasks to your mix.exs to compile all code
 automatically when you type mix.compile:
 
 ```elixir
@@ -98,9 +98,9 @@ def project do
 end
 ```
 
-## C-code
+## C/C++ code
 
-C-code is currently placed in the c_src directory of your application.
+C/C++ code is currently placed in the c_src directory of your application.
 It can interface with Elixir-code based on 2 important functions:
 
 1. read_msg to read data coming from Elixir;
@@ -118,7 +118,7 @@ It can interface with Elixir-code based on 2 important functions:
 
 The command "mix cure.bootstrap" generates a basic Makefile (in ./c_src/) that handles the compilation of all your C-code. This file is only generated if it doesn't exist yet so it's safe to add modifications for when your C-files need extra includes to compile properly.
 
-The command "mix cure.make" uses the Makefile to compile all your C-code.
+The command "mix cure.make" uses the Makefile to compile all your C/C++ code.
 
 ## More information regarding Ports
 

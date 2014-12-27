@@ -1,6 +1,10 @@
 #ifndef ELIXIR_COMM_H
 #define ELIXIR_COMM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MAX_BUFFER_SIZE 65535
 
 typedef unsigned char byte;
@@ -27,5 +31,10 @@ void send_msg(byte* buffer, int length);
  * The message has to be a string that terminates with \0.
  */
 void send_error(char* error_message);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
