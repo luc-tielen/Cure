@@ -17,7 +17,7 @@ defmodule Cure.Server do
 
   @doc """
   Starts a Cure.Server process and opens a Port that can communicate with a
-  C-program.
+  C/C++ program.
   """
   @spec start(String.t) :: GenEvent.on_start
   def start(program_name) when program_name |> is_binary do
@@ -28,7 +28,7 @@ defmodule Cure.Server do
   
   @doc """
   Starts a Cure.Server process, links it to the calling process and opens a 
-  Port that can communicate with a C-program.
+  Port that can communicate with a C/C++ program.
   """
   @spec start_link(String.t) :: GenEvent.on_start
   def start_link(program_name) when program_name |> is_binary do
@@ -82,14 +82,6 @@ defmodule Cure.Server do
   end
 
   @doc """
-  Returns a stream that consumes events from the Cure.Server process.
-  """
-  @spec stream(pid) :: GenEvent.Stream.t
-  def stream(mgr) when mgr |> is_pid do
-    mgr |> GenEvent.stream
-  end
-
-  @doc """
   Sends binary data to the C/C++ program that the server is connected with. A 
   callback-function (arity 1) can be added to handle the incoming response of
   the program. If no callback is added, the response will be sent to the 
@@ -130,7 +122,7 @@ defmodule Cure.Server do
       and (timeout == :infinity or (timeout |> is_number and timeout >= 0)) do
     mgr |> GenEvent.sync_notify {:data, data, :sync, timeout, {:pid, self}}
     receive do 
-      {:data_reply, msg} -> msg
+      {:cure_data, msg} -> msg
     end
   end
 
@@ -173,7 +165,7 @@ defmodule Cure.Server do
   end
   def send_data(mgr, data, :permanent) when mgr |> is_pid 
                                       and data |> is_binary do
-    mgr |> subscribe self
+    mgr |> subscribe
     mgr |> send_data(data, :noreply)
   end
   def send_data(mgr, data, :sync) when mgr |> is_pid 

@@ -96,12 +96,6 @@ defmodule Cure do
   end
  
   @doc """
-  Returns a stream that consumes data events coming from the C/C++ program.
-  """
-  @spec stream(pid) :: GenEvent.Stream.t
-  def stream(server), do: server |> Cure.Server.stream
-
-  @doc """
   Subscribes the calling process to receive data events from the server process.
   """
   @spec subscribe(pid) :: :ok
@@ -130,13 +124,10 @@ defmodule Cure do
   def unsubscribe(server, fun), do: server |> Cure.Server.unsubscribe(fun)
 
   @doc """
-  Stops a server process.
+  Stops a server process that is being supervised in the supervision tree.
   """
   @spec stop(pid) :: :ok
   def stop(server) when server |> is_pid do
-    # If the server is supervised it has to be removed from there, otherwise
-    # supervisor will restart it and the C-program will stay activated.
     server |> Cure.Supervisor.terminate_child
-    server |> Cure.Server.stop
   end
 end
