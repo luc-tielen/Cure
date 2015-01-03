@@ -4,64 +4,100 @@ A small library that interfaces Elixir-code with C/C++ programs using Erlang/Eli
 
 ## Example
 
-The following example loads a program called "program" which is located in the ./c_src/ directory.
+The following example loads a program called "program" which is located in the ./c_src/ directory of your project.
 
 ```elixir
 # Open the Port to the C/C++ program:
-{:ok, server_pid} = Cure.load "./c_src/program" 
+{:ok, server} = Cure.load "./c_src/program" 
 
-# Sending and receiving data:
-# Option 1 (synchronous):
-data = server_pid |> Cure.send_data("Testing 1, 2, 3!", :sync)
+# Depending on the kind of communication you need, there are several modes for 
+# sending and receiving messages:
 
-# Option 2 (asynchronous):
-server_pid |> Cure.send_data(<<1, 2, 3, 4>>, fn(data) ->
-    # Process the received data here.
-    IO.inspect data
-end)
+# Option 1 (once, asynchronous):
+# Useful for messages that generate a single response
 
-# Option 3 (asynchronous):
-server_pid |> Cure.send_data("More data!")
+# without callback function
+server |> Cure.send_data "any binary can be transmitted to the C/C++ side!", :once
 receive do
-  {:cure_data, data} ->
-    # Process the received data here.
-    IO.inspect data
+  {:cure_data, response} -> 
+    # Process response here..
 end
 
+# with callback function
+server |> Cure.send_data <<1, 2, 3>>, :once, fn(response) ->
+  # Process response here..
+end
+
+
+# Option 2 (noreply, asynchronous):
+# Useful if you don't need a response from the C/C++ side or if you are already subscribed to the Cure process.
+server |> Cure.send_data "more data..", :noreply
+
+
+# Option 3 (permanent, asynchronous)
+# Useful when you want to keep processing responses after you send an initial message
+# (NOTE: After this function is used once, you can use :noreply and still keep getting responses)
+
+# without callback function
+server |> Cure.send_data "abcdef", :permanent
+receive do
+  {:cure_data, msg} -> 
+    # Process response here...
+end
+
+# with callback function
+server |> Cure.send_data "...", :permanent, fn(response) ->
+  # Process response here..
+end
+
+
+# Option 4 (synchronous):
+result1 = server |> Cure.send_data "testdata", :sync # a timeout can also be added as last argument
+server |> Cure.send_data <<1,2,3>>, :sync, fn(response) ->
+    IO.inspect response
+end
+
+
 # Close the program:
-server_pid |> Cure.stop
+server |> Cure.stop # stops the supervised server
 ```
 
-By default, Cure starts a supervisor which supervises all of its children (a child in this case is a GenServer that communicates with a C-program). A child is added to the supervision tree with Cure.load(program_name). If you don't want this behaviour, you can also directly start a server with one of the following lines of code:
+By default, Cure starts a supervisor which supervises all of its children (a child in this case is a GenServer that communicates with a C/C++ program). A child is added to the supervision tree with Cure.load(program_name). If you don't want this behaviour, you can also directly start a server with one of the following lines of code:
 
 ```elixir
 # Option 1:
-{:ok, server_pid} = Cure.Server.start_link "program_name"
+{:ok, server} = Cure.Server.start_link "program_name"
 
 # Option 2:
-{:ok, server_pid} = Cure.Server.start "program_name"
+{:ok, server} = Cure.Server.start "program_name"
+
+# Stopping the server:
+:ok = Cure.Server.stop(server)
 ```
 
-If you want to use a Port directly, you can use the following functions
-(currently only supports synchronous communication):
+A process can also (un)subscribe to responses coming from the C/C++ side using the following functions:
 
 ```elixir
-port = Cure.Port.load("program_name")
-result = port |> Cure.Port.send_data("123456789")
-port |> Cure.Port.close
+# Option 1: receives responses as {:cure_data, ...}
+server |> Cure.subscribe
+server |> Cure.unsubscribe
+
+# Option 2: passes every response to a function that processes it
+fun = fn(response) -> IO.inspect response end
+server |> Cure.subscribe fun
+server |> Cure.unsubscribe fun
 ```
 
 Examples that use Cure can be found at the following links:
 
 - [Subtitlex](https://github.com/Primordus/Subtitlex)
-- [ExDSP](https://github.com/Primordus/ExDSP)
 
 ## Getting started
 
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:cure, "~> 0.3.4"}]
+	[{:cure, "~> 0.4.0"}]
 end
 ```
 ### Fetch & compile dependencies
