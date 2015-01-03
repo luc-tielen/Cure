@@ -7,7 +7,7 @@ extern "C" {
 
 #define MAX_BUFFER_SIZE 65535
 
-typedef unsigned char byte;
+typedef char byte;
 
 /*
  * Helper function to read data from Erlang/Elixir from stdin.
@@ -30,7 +30,7 @@ void send_msg(byte* buffer, int length);
  * Helper function to send an error message back to Erlang/Elixir.
  * The message has to be a string that terminates with \0.
  */
-void send_error(char* error_message);
+void send_error(byte* error_message);
 
 
 #ifdef __cplusplus

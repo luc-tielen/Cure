@@ -36,7 +36,7 @@ void send_msg(byte* buffer, int length)
     fflush(stdout);
 }
 
-void send_error(char* error_message)
+void send_error(byte* error_message)
 {
     send_msg(error_message, strlen(error_message));
 }
