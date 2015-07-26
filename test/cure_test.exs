@@ -3,7 +3,7 @@ defmodule CureTest do
 
   @program_name "./test/test_echo_program"
 
-  setup do
+  setup_all do
     unless File.exists?(@program_name) do
       IO.puts "Compiling test_program."
       System.cmd "make", ["-C", "./test/"]

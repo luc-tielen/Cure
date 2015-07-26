@@ -1,5 +1,6 @@
 defmodule Cure.Server do
   use GenEvent
+  alias Cure.Queue, as: Queue
   require Logger
 
   @moduledoc """
@@ -10,7 +11,7 @@ defmodule Cure.Server do
   @port_options [:binary, :use_stdio, packet: 2]
 
   defmodule State do
-    defstruct port: nil, mgr: nil, queue: [], subs: []
+    defstruct port: nil, mgr: nil, queue: Queue.new, subs: []
   end
 
   ## API
@@ -206,13 +207,15 @@ defmodule Cure.Server do
   end
   def handle_event({:data, data, :once, callback}, 
                     state = %State{port: port, queue: queue}) do
-    new_state = %State{state | queue: [callback | queue]}
+    new_state = %State{state | queue: Queue.push(queue, callback)}
     port |> Port.command(data)
     {:ok, new_state}
   end
-  def handle_event({:data, data, :noreply}, state = %State{port: port}) do
+  def handle_event({:data, data, :noreply},
+                    state = %State{port: port, queue: queue}) do
+    new_state = %State{state | queue: Queue.push(queue, :noreply)}
     port |> Port.command(data)
-    {:ok, state}
+    {:ok, new_state}
   end
   def handle_event({:data, data, :sync, timeout, cb}, 
                     state = %State{port: port}) do
@@ -232,7 +235,7 @@ defmodule Cure.Server do
   ## Port related callbacks
 
    @doc false
-   def handle_info({_port, {:data, msg}}, state = %State{queue: [], 
+   def handle_info({_port, {:data, msg}}, state = %State{queue: {[], []}, 
                                                         subs: subs}) do
     spawn fn ->
       subs |> Enum.map fn(sub) ->
@@ -244,7 +247,7 @@ defmodule Cure.Server do
   end 
   def handle_info({_port, {:data, msg}}, state = %State{queue: queue,
                                                         subs: subs}) do
-    {remaining, [oldest]} = Enum.split(queue, -1) # TODO improve this, = O(n)..
+    {remaining, value: oldest} = Queue.pop(queue)
     state = %State{state | queue: remaining}
     oldest |> handle_msg(msg)
 
@@ -273,12 +276,9 @@ defmodule Cure.Server do
       apply(callback, [msg])
     end
   end
+  defp handle_msg(:noreply, _msg), do: :ok
 
   defp add_sub(subs, new_sub) do
-    if in_list?(subs, new_sub), do: subs, else: [new_sub | subs]
+    if new_sub in subs, do: subs, else: [new_sub | subs]
   end
-
-  defp in_list?([], _item), do: false
-  defp in_list?([item | _tail], item), do: true
-  defp in_list?([_head | tail], item), do: in_list?(tail, item)
 end

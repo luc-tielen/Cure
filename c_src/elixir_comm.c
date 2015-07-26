@@ -3,6 +3,10 @@
 #include <string.h>
 #include "elixir_comm.h"
 
+/*
+ * Helper function to read data from Erlang/Elixir from stdin.
+ * Returns the number of bytes read (-1 on error), fills buffer with data.
+ */
 static int read_input(byte* buffer, int length)
 {
     int bytes_read = fread(buffer, sizeof(byte), length, stdin);

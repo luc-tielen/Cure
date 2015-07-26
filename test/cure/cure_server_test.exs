@@ -4,7 +4,7 @@ defmodule Cure.ServerTest do
   @program_name "./test/test_echo_program"
 
   # First compile a little C-program that echo's data back.
-  setup do
+  setup_all do
     unless File.exists?(@program_name) do
       IO.puts "Compiling test_program."
       System.cmd "make", ["-C", "./test/"]

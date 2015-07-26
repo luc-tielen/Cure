@@ -30,13 +30,15 @@ end
 
 
 # Option 2 (noreply, asynchronous):
-# Useful if you don't need a response from the C/C++ side or if you are already subscribed to the Cure process.
+# Useful if you don't need a response from the C/C++ side or if you are 
+# already subscribed to the Cure process.
 server |> Cure.send_data "more data..", :noreply
 
 
 # Option 3 (permanent, asynchronous)
 # Useful when you want to keep processing responses after you send an initial message
-# (NOTE: After this function is used once, you can use :noreply and still keep getting responses)
+# (NOTE: After this function is used once, you can use :noreply and 
+# still keep getting responses)
 
 # without callback function
 server |> Cure.send_data "abcdef", :permanent
@@ -52,7 +54,8 @@ end
 
 
 # Option 4 (synchronous):
-result1 = server |> Cure.send_data "testdata", :sync # a timeout can also be added as last argument
+# (a timeout can also be added as last argument)
+result1 = server |> Cure.send_data "testdata", :sync 
 server |> Cure.send_data <<1,2,3>>, :sync, fn(response) ->
     IO.inspect response
 end

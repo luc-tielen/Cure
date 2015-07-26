@@ -10,12 +10,6 @@ extern "C" {
 typedef char byte;
 
 /*
- * Helper function to read data from Erlang/Elixir from stdin.
- * Returns the number of bytes read (-1 on error), fills buffer with data.
- */
-static int read_input(byte* buffer, int length);
-
-/*
  * Reads a message coming from Erlang/Elixir from stdin.
  * Returns the number of bytes read (-1 on error), fills the buffer with data.
  */
