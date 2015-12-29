@@ -1,6 +1,6 @@
 //Code mostly based on: http://www.erlang.org/doc/tutorial/c_port.html
-#include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "elixir_comm.h"
 
 /*
@@ -9,7 +9,7 @@
  */
 static int read_input(byte* buffer, int length)
 {
-    int bytes_read = fread(buffer, sizeof(byte), length, stdin);
+    int bytes_read = read(0, buffer, length);
     if(bytes_read != length){
         return -1;
     }
@@ -23,7 +23,7 @@ int read_msg(byte* buffer)
     int length;
 
     if(read_input(len, 2) != 2){
-        return -1; 
+        return -1;
     }
 
     length = (len[0] << 8) | len[1];
@@ -35,9 +35,8 @@ void send_msg(byte* buffer, int length)
     byte len[2]; //first 2 bytes contain length of the message.
     len[0] = (length >> 8) & 0xff;
     len[1] = length & 0xff;
-    fwrite(len, sizeof(byte), 2, stdout);
-    fwrite(buffer, sizeof(byte), length, stdout);
-    fflush(stdout);
+    write(1, len, 2);
+    write(1, buffer, length);
 }
 
 void send_error(byte* error_message)
