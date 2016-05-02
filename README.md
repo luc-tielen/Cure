@@ -8,9 +8,9 @@ The following example loads a program called "program" which is located in the .
 
 ```elixir
 # Open the Port to the C/C++ program:
-{:ok, server} = Cure.load "./c_src/program" 
+{:ok, server} = Cure.load "./c_src/program"
 
-# Depending on the kind of communication you need, there are several modes for 
+# Depending on the kind of communication you need, there are several modes for
 # sending and receiving messages:
 
 # Option 1 (once, asynchronous):
@@ -19,7 +19,7 @@ The following example loads a program called "program" which is located in the .
 # without callback function
 server |> Cure.send_data "any binary can be transmitted to the C/C++ side!", :once
 receive do
-  {:cure_data, response} -> 
+  {:cure_data, response} ->
     # Process response here..
 end
 
@@ -30,20 +30,20 @@ end
 
 
 # Option 2 (noreply, asynchronous):
-# Useful if you don't need a response from the C/C++ side or if you are 
+# Useful if you don't need a response from the C/C++ side or if you are
 # already subscribed to the Cure process.
 server |> Cure.send_data "more data..", :noreply
 
 
 # Option 3 (permanent, asynchronous)
 # Useful when you want to keep processing responses after you send an initial message
-# (NOTE: After this function is used once, you can use :noreply and 
+# (NOTE: After this function is used once, you can use :noreply and
 # still keep getting responses)
 
 # without callback function
 server |> Cure.send_data "abcdef", :permanent
 receive do
-  {:cure_data, msg} -> 
+  {:cure_data, msg} ->
     # Process response here...
 end
 
@@ -55,7 +55,7 @@ end
 
 # Option 4 (synchronous):
 # (a timeout can also be added as last argument)
-result1 = server |> Cure.send_data "testdata", :sync 
+result1 = server |> Cure.send_data "testdata", :sync
 server |> Cure.send_data <<1,2,3>>, :sync, fn(response) ->
     IO.inspect response
 end
