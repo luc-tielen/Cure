@@ -98,21 +98,35 @@ Examples that use Cure can be found at the following links:
 ## Getting started
 
 ### Add the Cure dependency to your mix.exs file:
+
 ```elixir
 def deps do
 	[{:cure, "~> 0.4.0"}]
 end
 ```
 
-If you're using Cure with a Phoenix application, add Cure to your list of
-applications:
+If you're using Cure together with another Elixir or Erlang OTP application,
+you can add Cure to the list of applications that have to be started when your
+app also starts. This will in turn automatically start the top Cure supervisor
+that can supervise Cure.Server processes.
+
+```elixir
+def application do
+    [mod: {YourApp, []},
+     applications: [:cure, ...]]
+end
+```
+
+For a Phoenix application (also an OTP application!) this could look as follows:
+
 ```elixir
 def application do
   [mod: {YourApp, []},
    applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                  :phoenix_ecto, :postgrex, :cure]]
+                  :phoenix_ecto, :postgrex, :cure, ...]]
 end
 ```
+
 ### Fetch & compile dependencies
 ```
 mix deps.get
