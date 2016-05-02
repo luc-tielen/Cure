@@ -103,6 +103,16 @@ def deps do
 	[{:cure, "~> 0.4.0"}]
 end
 ```
+
+If you're using Cure with a Phoenix application, add Cure to your list of
+applications:
+```elixir
+def application do
+  [mod: {YourApp, []},
+   applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
+                  :phoenix_ecto, :postgrex, :cure]]
+end
+```
 ### Fetch & compile dependencies
 ```
 mix deps.get
