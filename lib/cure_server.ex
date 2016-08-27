@@ -51,7 +51,7 @@ defmodule Cure.Server do
   """
   @spec subscribe(pid) :: :ok  
   def subscribe(mgr) when mgr |> is_pid do
-    mgr |> GenEvent.sync_notify {:subscribe, self}
+    mgr |> GenEvent.sync_notify({:subscribe, self})
   end
 
   @doc """
@@ -60,7 +60,7 @@ defmodule Cure.Server do
   """
   @spec subscribe(pid, ((binary) -> any)) :: :ok
   def subscribe(mgr, fun) when mgr |> is_pid and fun |> is_function(1) do
-    mgr |> GenEvent.sync_notify {:subscribe_callback, fun}
+    mgr |> GenEvent.sync_notify({:subscribe_callback, fun})
   end
 
   @doc """
@@ -69,7 +69,7 @@ defmodule Cure.Server do
   """
   @spec unsubscribe(pid) :: :ok
   def unsubscribe(mgr) do
-    mgr |> GenEvent.sync_notify {:unsubscribe, self}
+    mgr |> GenEvent.sync_notify({:unsubscribe, self})
   end
 
   @doc """
@@ -79,7 +79,7 @@ defmodule Cure.Server do
   """
   @spec unsubscribe(pid, ((binary) -> any)) :: :ok
   def unsubscribe(mgr, fun) do
-    mgr |> GenEvent.sync_notify {:unsubscribe_callback, fun}
+    mgr |> GenEvent.sync_notify({:unsubscribe_callback, fun})
   end
 
   @doc """
@@ -102,13 +102,13 @@ defmodule Cure.Server do
       when mgr |> is_pid 
       and data |> is_binary 
       and callback |> is_function(1) do
-    mgr |> GenEvent.sync_notify {:data, data, :once, {:function, callback}}
+    mgr |> GenEvent.sync_notify({:data, data, :once, {:function, callback}})
   end
   def send_data(mgr, data, :permanent, callback) 
       when mgr |> is_pid 
       and data |> is_binary
       and callback |> is_function(1) do
-    mgr |> subscribe callback
+    mgr |> subscribe(callback)
     mgr |> send_data(data, :noreply)
   end
   def send_data(mgr, data, :sync, callback) 
@@ -121,7 +121,7 @@ defmodule Cure.Server do
       when mgr |> is_pid
       and data |> is_binary 
       and (timeout == :infinity or (timeout |> is_number and timeout >= 0)) do
-    mgr |> GenEvent.sync_notify {:data, data, :sync, timeout, {:pid, self}}
+    mgr |> GenEvent.sync_notify({:data, data, :sync, timeout, {:pid, self}})
     receive do 
       {:cure_data, msg} -> msg
     end
@@ -138,8 +138,8 @@ defmodule Cure.Server do
       and data |> is_binary
       and callback |> is_function(1)
       and (timeout == :infinity or (timeout |> is_number and timeout > 0)) do
-    mgr |> GenEvent.sync_notify {:data, data, :sync, timeout, 
-                                  {:function, callback}}
+    mgr |> GenEvent.sync_notify({:data, data, :sync, timeout, 
+                                  {:function, callback}})
   end
   
   @doc """
@@ -158,11 +158,11 @@ defmodule Cure.Server do
                   :once | :noreply | :permanent, :sync) :: :ok | {:error, term}
   def send_data(mgr, data, :once) when mgr |> is_pid
                                   and data |> is_binary do
-    mgr |> GenEvent.sync_notify {:data, data, :once, {:pid, self}}
+    mgr |> GenEvent.sync_notify({:data, data, :once, {:pid, self}})
   end
   def send_data(mgr, data, :noreply) when mgr |> is_pid
                                       and data |> is_binary do
-    mgr |> GenEvent.sync_notify {:data, data, :noreply}
+    mgr |> GenEvent.sync_notify({:data, data, :noreply})
   end
   def send_data(mgr, data, :permanent) when mgr |> is_pid 
                                       and data |> is_binary do
@@ -192,14 +192,14 @@ defmodule Cure.Server do
 
   @doc false
   def handle_event({:subscribe, pid}, state = %State{subs: subs}) do
-    new_subs = subs |> add_sub {:pid, pid} 
+    new_subs = subs |> add_sub({:pid, pid})
     {:ok, %State{state | subs: new_subs}}
   end
   def handle_event({:unsubscribe, pid}, state = %State{subs: subs}) do
     {:ok, %State{state | subs: List.delete(subs, {:pid, pid})}}
   end
   def handle_event({:subscribe_callback, fun}, state = %State{subs: subs}) do
-    new_subs = subs |> add_sub {:function, fun}
+    new_subs = subs |> add_sub({:function, fun})
     {:ok, %State{state | subs: new_subs}}
   end
   def handle_event({:unsubscribe_callback, fun}, state = %State{subs: subs}) do
@@ -238,9 +238,9 @@ defmodule Cure.Server do
    def handle_info({_port, {:data, msg}}, state = %State{queue: {[], []}, 
                                                         subs: subs}) do
     spawn fn ->
-      subs |> Enum.map fn(sub) ->
+      subs |> Enum.map(fn(sub) ->
         sub |> handle_msg(msg)
-      end
+      end)
     end
 
     {:ok, state}
@@ -252,9 +252,9 @@ defmodule Cure.Server do
     oldest |> handle_msg(msg)
 
     spawn fn ->
-      subs |> Enum.map fn(sub) ->
+      subs |> Enum.map(fn(sub) ->
         sub |> handle_msg(msg)
-      end
+      end)
     end
     
     {:ok, state}
@@ -269,7 +269,7 @@ defmodule Cure.Server do
   # Helper functions:
 
   defp handle_msg({:pid, pid}, msg) do
-    pid |> send {:cure_data, msg}
+    pid |> send({:cure_data, msg})
   end
   defp handle_msg({:function, callback}, msg) do
     spawn fn -> 
