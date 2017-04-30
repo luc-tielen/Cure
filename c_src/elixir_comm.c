@@ -10,7 +10,7 @@
  * Helper function to read data from Erlang/Elixir from stdin.
  * Returns the number of bytes read (-1 on error), fills buffer with data.
  */
-static int read_input(byte* buffer, int length)
+static int read_input(char* buffer, int length)
 {
     int bytes_read = read(STDIN, buffer, length);
     if(bytes_read != length){
@@ -20,12 +20,12 @@ static int read_input(byte* buffer, int length)
     return bytes_read;
 }
 
-int read_msg(byte* buffer)
+int read_msg(char* buffer)
 {
     byte len[2]; //first 2 bytes contain length of the message.
     int length;
 
-    if(read_input(len, 2) != 2){
+    if(read_input((char*)len, 2) != 2){
         return -1;
     }
 
@@ -33,7 +33,7 @@ int read_msg(byte* buffer)
     return read_input(buffer, length);
 }
 
-void send_msg(byte* buffer, int length)
+void send_msg(char* buffer, int length)
 {
     byte len[2]; //first 2 bytes contain length of the message.
     len[0] = (length >> 8) & 0xff;
@@ -42,7 +42,7 @@ void send_msg(byte* buffer, int length)
     write(STDOUT, buffer, length);
 }
 
-void send_error(byte* error_message)
+void send_error(char* error_message)
 {
     send_msg(error_message, strlen(error_message));
 }
