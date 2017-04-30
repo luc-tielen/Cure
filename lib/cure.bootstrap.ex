@@ -6,8 +6,6 @@ defmodule Mix.Tasks.Cure.Bootstrap do
   @cure_source_dir Path.expand("./c_src/")
   @own_source_dir Path.expand("../../c_src")
   
-  @cmd_opts [stderr_to_stdout: true]
-
   @doc """
   Creates the c_src directory along with a Makefile and a few basic C-files to
   streamline the C-development.
@@ -16,13 +14,13 @@ defmodule Mix.Tasks.Cure.Bootstrap do
     File.mkdir @own_source_dir
     IO.puts "Created ./c_src/"
 
-    generate_files
+    generate_files()
     IO.puts "Done bootstrapping."
   end
 
   defp generate_files do 
-    generate_main
-    generate_makefile
+    generate_main()
+    generate_makefile()
   end
 
   defp generate_main do

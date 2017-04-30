@@ -12,7 +12,7 @@ defmodule CureTest do
   end
   
   test "Test normal workflow using :sync messages" do
-    pid = self
+    pid = self()
     data1 = "testing 1,2,3"
     data2 = <<0, 1, 2, 3, 4, 5>>
 
@@ -42,7 +42,7 @@ defmodule CureTest do
   end
 
   test "Test normal workflow using :permanent and :noreply messages" do
-    pid = self
+    pid = self()
     data = "12345"
 
     # 3 args
@@ -77,7 +77,7 @@ defmodule CureTest do
   end
 
   test "Workflow using :once messages" do
-    pid = self
+    pid = self()
     data = "abc"
     {:ok, server} = Cure.load @program_name
 
@@ -101,7 +101,7 @@ defmodule CureTest do
   end
 
   test "Subscribing and unsubscribing to data events" do
-    pid = self 
+    pid = self() 
     data = "xyz"
     cb = fn(msg) ->
       pid |> send({:subscriber_data, msg})

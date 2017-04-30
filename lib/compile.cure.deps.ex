@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Compile.Cure.Deps do
 
     IO.puts "Compiling Cure-based dependencies."
 
-    get_deps |> Enum.map(fn(dep) ->
+    get_deps() |> Enum.map(fn(dep) ->
       if need_to_compile?(dep) do
         compile(dep)
       end

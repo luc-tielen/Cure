@@ -51,7 +51,7 @@ defmodule Cure.Server do
   """
   @spec subscribe(pid) :: :ok  
   def subscribe(mgr) when mgr |> is_pid do
-    mgr |> GenEvent.sync_notify({:subscribe, self})
+    mgr |> GenEvent.sync_notify({:subscribe, self()})
   end
 
   @doc """
@@ -69,7 +69,7 @@ defmodule Cure.Server do
   """
   @spec unsubscribe(pid) :: :ok
   def unsubscribe(mgr) do
-    mgr |> GenEvent.sync_notify({:unsubscribe, self})
+    mgr |> GenEvent.sync_notify({:unsubscribe, self()})
   end
 
   @doc """
@@ -121,7 +121,7 @@ defmodule Cure.Server do
       when mgr |> is_pid
       and data |> is_binary 
       and (timeout == :infinity or (timeout |> is_number and timeout >= 0)) do
-    mgr |> GenEvent.sync_notify({:data, data, :sync, timeout, {:pid, self}})
+    mgr |> GenEvent.sync_notify({:data, data, :sync, timeout, {:pid, self()}})
     receive do 
       {:cure_data, msg} -> msg
     end
@@ -158,7 +158,7 @@ defmodule Cure.Server do
                   :once | :noreply | :permanent, :sync) :: :ok | {:error, term}
   def send_data(mgr, data, :once) when mgr |> is_pid
                                   and data |> is_binary do
-    mgr |> GenEvent.sync_notify({:data, data, :once, {:pid, self}})
+    mgr |> GenEvent.sync_notify({:data, data, :once, {:pid, self()}})
   end
   def send_data(mgr, data, :noreply) when mgr |> is_pid
                                       and data |> is_binary do

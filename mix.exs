@@ -5,9 +5,9 @@ defmodule Cure.Mixfile do
     [app: :cure,
      version: "0.4.2",
      elixir: ">= 1.1.1",
-     description: description,
-     deps: deps,
-     package: package]
+     description: description(),
+     deps: deps(),
+     package: package()]
   end
 
   def application do
