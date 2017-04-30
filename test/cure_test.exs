@@ -10,7 +10,17 @@ defmodule CureTest do
     end
     :ok
   end
-  
+
+  test "Test a message that overflows C 'signed char' size" do
+    data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    {:ok, server} = Cure.load @program_name
+
+    assert data == server |> Cure.send_data(data, :sync, 5000)
+
+    :ok = server |> Cure.stop
+  end
+
   test "Test normal workflow using :sync messages" do
     pid = self()
     data1 = "testing 1,2,3"
