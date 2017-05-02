@@ -3,7 +3,7 @@ defmodule Cure.Mixfile do
 
   def project do
     [app: :cure,
-     version: "0.4.2",
+     version: "0.5.0",
      elixir: ">= 1.1.1",
      description: description(),
      deps: deps(),
@@ -12,8 +12,8 @@ defmodule Cure.Mixfile do
 
   def application do
     [applications: [:logger],
-    registered: [Cure.Supervisor],
-    mod: {Cure, []}]
+     registered: [Cure.Supervisor],
+     mod: {Cure, []}]
   end
 
   defp description do
@@ -29,8 +29,8 @@ defmodule Cure.Mixfile do
 
   defp package do
     [files: ~w(lib c_src mix.exs README* LICENSE* ),
-    maintainers: ["Luc Tielen", "Joel Feldberg"],
-    licenses: ["MIT"],
-    links: %{"GitHub" => "https://github.com/Primordus/Cure.git"}]
+     maintainers: ["Luc Tielen", "Joel Feldberg"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/luc-tielen/Cure.git"}]
   end
 end
